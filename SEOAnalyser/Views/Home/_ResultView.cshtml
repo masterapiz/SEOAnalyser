@@ -1,0 +1,38 @@
+﻿@model  SEOAnalyser.Models.Result
+@using NonFactors.Mvc.Grid
+
+    @if (Model.filteredText != string.Empty)
+    {
+        <h2>Filtered Text</h2>
+        <i>@Model.filteredText</i>
+    }
+
+    @if (Model.stopWordInContent.Count > 0)
+    {
+        <h2>Stop-Words in Content</h2>
+        @Html.Grid(Model.stopWordInContent).Named("stopWordsContent").Build(columns =>
+                             {
+                                 columns.Add(c => c.stopWord).Titled("Stop Word");
+                                 columns.Add(c => c.noOfTimes).Titled("Number Occurence");
+
+                             }).Sortable()
+    }
+
+    @if (Model.stopWordInMeta.Count > 0)
+    {
+        <h2>Stop-Words in Meta</h2>
+
+        @Html.Grid(Model.stopWordInMeta).Named("stopWordsMeta").Build(columns =>
+                                  {
+                                      columns.Add(c => c.stopWord).Titled("Stop Word");
+                                      columns.Add(c => c.noOfTimes).Titled("Number Occurence");
+
+                                  }).Sortable()
+    }
+
+    @if (Model.numberExternalLinks > 0)
+    {
+        <h2>Number of External Links : @Model.numberExternalLinks</h2>
+    }
+
+@if (Model.Empty) { <center><h4>No records.</h4></center> }

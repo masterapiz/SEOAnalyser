@@ -1,0 +1,63 @@
+﻿@model SEOAnalyser.Models.Result
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="row">
+
+    <h2>Enter Text or URL</h2>
+
+    <input type="text" class="form-control" id="txtInput" width="300">
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="isRepeat">
+        <label class="form-check-label" for="isRepeat">Stop Words</label>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="isRepeatMeta">
+        <label class="form-check-label" for="isRepeatMeta">Stop Words in Meta Tag</label>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="isExternalLink">
+        <label class="form-check-label" for="isExternalLink">Count External Links</label>
+    </div>
+
+    <button id="btnSubmit" type="button" onclick="submitText()">Analyze</button>
+    <img id="loading" src="~/loading.gif" style="display: none;" width="50" height="50" />
+
+
+</div>
+<div id="resultView">
+    @Html.Partial("_ResultView", Model)
+
+</div>
+
+<script>
+
+    function submitText() {
+        var text = $('#txtInput').val();
+        var Repeat = $('#isRepeat').is(":checked");
+        var RepeatMeta = $('#isRepeatMeta').is(":checked");
+        var ExternalLink = $('#isExternalLink').is(":checked");
+
+        var data = JSON.stringify({ textSearch: text, isRepeat: Repeat, isRepeatMeta: RepeatMeta, isExternalLink: ExternalLink });
+        $('#loading').show();
+        $('#btnSubmit').attr('disabled', true);
+        $.ajax({
+            url: "@Url.Action("processText", "Home")",
+            contentType: 'application/json',
+            type: 'POST',
+            data: data,
+            success: function (data) {
+                $("#resultView").html(data);
+                $('#loading').hide();
+                $('#btnSubmit').attr('disabled', false);
+            },
+            error: function (data) {
+                alert(data.responseJSON);
+                $('#loading').hide();
+                $('#btnSubmit').attr('disabled', false);
+            }
+        });
+    }
+</script>
